@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>OnTrack</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/index-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
+    <!-- <link rel="stylesheet" href="css/calendar-1.css"> -->
+    <link rel="stylesheet" href="css/chat.css">
+
+
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+
+    <link href='fullcalendar/packages/core/main.css' rel='stylesheet' />
+    <link href='fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
+
+    <style>
+        #loader-container {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            background: black;
+            z-index: 3;
+        }
+
+        #loader-container>img {
+            width: 220px;
+            height: 110px;
+            position: absolute;
+            margin: auto;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        #todayTodoList {
+            height: auto;
+        }
+
+        .btnStatus {
+            border: none;
+            color: white !important;
+            font-size: 16px;
+            cursor: pointer;
+            width: 120px !important;
+        }
+
+        .success {
+            background-color: green;
+        }
+
+        .in-progress {
+            background-color: orangered;
+        }
+
+        .openStatus {
+            background-color: gray;
+        }
+
+        .statusList {
+            color: black;
+            background-color: white;
+        }
+
+        .borderLess {
+            border: 0;
+        }
+
+        /* .dropdown {
+            float: left;
+            overflow: hidden;
+        }
+
+        .dropdown .dropbtn {
+            cursor: pointer;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: rgb(21, 196, 65);
+            background-color: inherit;
+            font-family: inherit;
+            margin: 0;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #934141;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgb(193, 42, 42);
+        }
+
+        .show {
+            display: block;
+        } */
+
+        #calendar {
+            max-width: 400px;
+            margin: 0;
+            height: 600px;
+        }
+
+        #calendar .fc-view-container {
+            padding: 10px;
+            background-color: #fff;
+            -webkit-box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.2);
+        }
+    </style>
+
+</head>
+
+<body id="page-top">
+    <div id="loader-container">
+        <img src="assets/loader.gif" alt="">
+    </div>
+    <div id="wrapper">
+
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <!-- <i class="fas fa-laugh-wink"></i> -->
+                </div>
+                <div class="sidebar-brand-text mx-3">OnTrack</div>
+            </a>
+
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item ">
+                <a class="nav-link" href="#" id="btnHomePage">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>Home</span></a>
+            </li>
+
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading"> Spaces </div>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Projects</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="#" data-toggle="modal" data-target="#newProjectModal">+ NEW
+                            PROJECT</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Other Projects</h6>
+                        <div id="projectList">
+
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDashboards"
+                    aria-expanded="true" aria-controls="collapseDashboards">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Dashboard</span>
+                </a>
+                <div id="collapseDashboards" class="collapse" aria-labelledby="headingDashboards"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">My Private Dashboards</h6>
+                        <a class="collapse-item" href="#">Dashboard</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDocument"
+                    aria-expanded="true" aria-controls="collapseDocument">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Document</span>
+                </a>
+                <div id="collapseDocument" class="collapse" aria-labelledby="headingDocument"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="#">+ ADD NEW</a>
+                        <div class="collapse-divider"></div>
+                        <a class="collapse-item" href="#">Assigned to me</a>
+                        <a class="collapse-item" href="#">Shared</a>
+                        <a class="collapse-item" href="#">Private</a>
+                    </div>
+                </div>
+            </li>
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+        <!-- End of Sidebar -->
+
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!--                     
+                    <form
+                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form> -->
+
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">3+</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Alerts Center
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 12, 2019</div>
+                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-success">
+                                            <i class="fas fa-donate text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 7, 2019</div>
+                                        $290.29 has been deposited into your account!
+                                    </div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-warning">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">December 2, 2019</div>
+                                        Spending Alert: We've noticed unusually high spending for your account.
+                                    </div>
+                                </a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Messages -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw"></i>
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter" id="chatCount"></span>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class=" dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="messagesDropdown">
+
+                                <div class="box box-warning direct-chat direct-chat-warning">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">Chat Messages</h3>
+
+                                        <div class="box-tools pull-right">
+                                            <span data-toggle="tooltip" title="" class="badge bg-yellow"
+                                                data-original-title="3 New Messages"></span>
+                                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-box-tool" data-toggle="tooltip"
+                                                title="" data-widget="chat-pane-toggle" data-original-title="Contacts">
+                                                <i class="fa fa-comments"></i></button>
+                                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="box-body">
+
+                                        <div class="direct-chat-messages" id="msgLoader">
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="box-footer">
+                                        <form action="#" method="post">
+                                            <div class="input-group">
+                                                <input type="text" name="message" placeholder="Type Message ..."
+                                                    class="form-control">
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-warning btn-flat">Send</button>
+                                                </span>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span id="lblUserName" class="mr-2 d-none d-lg-inline text-gray-600 small"></span>
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Activity Log
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+
+                <section id="homePage">
+                    <div class="container-fluid">
+
+                        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h1 class="h3 mb-0 text-gray-800">My Work</h1>
+                            <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
+                        </div>
+
+                        <div>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="toDo-tab" data-bs-toggle="tab"
+                                        data-bs-target="#toDo-tab-pane" type="button" role="tab"
+                                        aria-controls="toDo-tab-pane" aria-selected="true">To Do</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="comment-tab" data-bs-toggle="tab"
+                                        data-bs-target="#comment-tab-pane" type="button" role="tab"
+                                        aria-controls="comment-tab-pane" aria-selected="false">Comments</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="done-tab" data-bs-toggle="tab"
+                                        data-bs-target="#done-tab-pane" type="button" role="tab"
+                                        aria-controls="done-tab-pane" aria-selected="false">Done
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="disabled-tab" data-bs-toggle="tab"
+                                        data-bs-target="#disabled-tab-pane" type="button" role="tab"
+                                        aria-controls="disabled-tab-pane" aria-selected="false"
+                                        disabled>Delegated</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active p-3" id="toDo-tab-pane" role="tabpanel"
+                                    aria-labelledby="toDo-tab" tabindex="0" style="height:0;">
+                                    <p>
+                                        <button id="btnTodayList" class="btn dropdown-toggle">
+                                            Today
+                                        </button>
+                                    </p>
+                                    <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+                                        <div id="todayTodoList" style="width: 60%;"> </div>
+                                        <div class="content">
+                                            <div id='calendar'></div>
+                                        </div>
+                                        <!-- <div id="calendar"> </div> -->
+                                        <!-- <div class="container">
+                                            <div class="calendar">
+                                                <div class="front">
+                                                    <div class="current-date">
+                                                        <h1 id="current-day"></h1>
+                                                        <h1>January 2023</h1>
+                                                    </div>
+
+                                                    <div class="current-month">
+                                                        <ul class="week-days">
+                                                            <li>SUN</li>
+                                                            <li>MON</li>
+                                                            <li>TUE</li>
+                                                            <li>WED</li>
+                                                            <li>THU</li>
+                                                            <li>FRI</li>
+                                                            <li>SAT</li>
+                                                        </ul>
+
+                                                        <div class="weeks">
+                                                            <div class="first" id="week1">
+                                                                <span>01</span>
+                                                                <span>02</span>
+                                                                <span>03</span>
+                                                                <span>04</span>
+                                                                <span>05</span>
+                                                                <span>06</span>
+                                                                <span>07</span>
+                                                            </div>
+
+                                                            <div class="second" id="week2">
+                                                                <span>08</span>
+                                                                <span>09</span>
+                                                                <span>10</span>
+                                                                <span>11</span>
+                                                                <span>12</span>
+                                                                <span>13</span>
+                                                                <span>14</span>
+                                                            </div>
+
+                                                            <div class="third" id="week3">
+                                                                <span>15</span>
+                                                                <span>16</span>
+                                                                <span>17</span>
+                                                                <span>18</span>
+                                                                <span>19</span>
+                                                                <span>20</span>
+                                                                <span>21</span>
+                                                            </div>
+
+                                                            <div class="fourth" id="week4">
+                                                                <span>22</span>
+                                                                <span>23</span>
+                                                                <span>24</span>
+                                                                <span>25</span>
+                                                                <span>26</span>
+                                                                <span>27</span>
+                                                                <span>28</span>
+                                                            </div>
+
+                                                            <div class="fifth" id="week5">
+                                                                <span>29</span>
+                                                                <span>30</span>
+                                                                <span>31</span>
+                                                                <span class="last-month">1</span>
+                                                                <span class="last-month">2</span>
+                                                                <span class="last-month">3</span>
+                                                                <span class="last-month">4</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="back">
+                                                    <input placeholder="What's the event?">
+                                                    <div class="info">
+                                                        <div class="date">
+                                                            <p class="info-date">
+                                                                Date: <span>Jan 15th, 2016</span>
+                                                            </p>
+                                                            <p class="info-time">
+                                                                Time: <span>6:35 PM</span>
+                                                            </p>
+                                                        </div>
+                                                        <div class="address">
+                                                            <p>
+                                                                Address: <span>129 W 81st St, New York, NY</span>
+                                                            </p>
+                                                        </div>
+                                                        <div class="observations">
+                                                            <p>
+                                                                Observations: <span>Be there 15 minutes earlier</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="actions">
+                                                        <button class="save">
+                                                            Save <i class="ion-checkmark"></i>
+                                                        </button>
+                                                        <button class="dismiss">
+                                                            Dismiss <i class="ion-android-close"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade p-3" id="comment-tab-pane" role="tabpanel"
+                                    aria-labelledby="comment-tab" tabindex="1">
+                                    <div id="commentList">
+                                        <div class="card card-body">
+                                            You have no assigned comments.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade p-3" id="done-tab-pane" role="tabpanel"
+                                    aria-labelledby="done-tab" tabindex="2">
+                                </div>
+                                <div class="tab-pane fade p-3" id="disabled-tab-pane" role="tabpanel"
+                                    aria-labelledby="disabled-tab" tabindex="3">...</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="projectPage">
+                    <div class="container-fluid">
+                        <h1 id="lblProjectName" class="h3 mb-2 text-gray-800">-</h1>
+                        <p id="lblProjectDesc" class="mb-4">-</p>
+
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3" style="display: flex; direction: row; align-items: center;">
+                                <button type="button" class="btn" id="btnAddNewTask" data-toggle="modal"
+                                    data-target="#newTaskModal">+ NEW TASK</button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th style="width: 550px;">TASKS</th>
+                                                <th style="width: 160px;">STATUS</th>
+                                                <th>ASSIGNEE</th>
+                                                <th>START DATE</th>
+                                                <th>DUE DATE</th>
+                                                <th>PRIORITY</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dataTable">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+                <section id="404Page">
+                    <div class="text-center">
+                        <div class="error mx-auto" data-text="404">404</div>
+                        <p class="lead text-gray-800 mb-5">Page Not Found</p>
+                        <p class="text-gray-500 mb-0">It looks like you found a glitch in the matrix...</p>
+                        <a href="index.html">&larr; Back to Dashboard</a>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <!-- <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Website 2023</span> 
+                        </div>
+                    </div>
+                </footer> -->
+                <!-- End of Footer -->
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="newProjectModal" tabindex="-1" aria-labelledby="newProjectModalTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">New Project</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addProjectForm">
+                            <div class="form-group">
+                                <label for="project-name" class="col-form-label">Project Name:</label>
+                                <input type="text" class="form-control" id="project-name" name="projectName">
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="col-form-label">Description:</label>
+                                <textarea class="form-control" id="description" name="description"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="emails" class="col-form-label">Members:</label>
+                                <textarea class="form-control" id="emails" name="email-list"
+                                    placeholder="add e-mails"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btnSaveProject">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="newTaskModal" tabindex="-1" role="dialog" aria-labelledby="newTaskModalTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <select class="custom-select btnStatus" id="inputGroupSelect01" onchange=""
+                            style="background-color: gray;">
+                            <option class="statusList" selected>OPEN</option>
+                            <option class="statusList" value="OPEN">OPEN</option>
+                            <option class="statusList" value="PENDING">PENDING</option>
+                            <option class="statusList" value="IN PROGRESS">IN PROGRESS</option>
+                            <option class="statusList" value="IN REVIEW">IN REVIEW</option>
+                            <option class="statusList" value="ACCEPTED">ACCEPTED</option>
+                            <option class="statusList" value="REJECTED">REJECTED</option>
+                            <option class="statusList" value="BLOCKED">BLOCKED</option>
+                            <option class="statusList" value="CLOSED">CLOSED</option>
+                        </select>
+
+
+                        <div style="display: flex; direction: row; justify-content: space-evenly; width: 600px;">
+
+                            <div>
+                                <select class="custom-select" id="newTaskUsersList">
+                                </select>
+                            </div>
+
+                            <div>
+                                <p style="margin: 0;">CREATE DATE</p>
+                                <span>
+                                    <input class="borderLess" type="date" id="createDate" name="createDate">
+                                </span>
+                            </div>
+                            <div>
+                                <p style="margin: 0;">DUE DATE</p>
+                                <input class="borderLess" type="date" id="dueDate" name="dueDate">
+                            </div>
+                        </div>
+
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="task-name" class="col-form-label">Task Name:</label>
+                                <input type="text" class="form-control" id="task-name">
+                            </div>
+                            <div class="form-group">
+                                <label for="task-description" class="col-form-label">Description:</label>
+                                <textarea class="form-control" id="task-description"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btnSaveTask">Create Task</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-primary" href="#" onclick="logOut()">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="assets/jQuery/jquery-3.6.0.min.js"></script>
+        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="assets/jQuery/jquery-3.6.0.min.js"></script>
+        <script src="assets/jQuery/jquery-ui.min.js"></script>
+        <!-- Bootstrap core JavaScript-->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="js/index-2.min.js"></script>
+
+        <script src="js/index.js"></script>
+        <!-- <script src="js/calendar-1.js"></script> -->
+
+        <script src='fullcalendar/packages/core/main.js'></script>
+        <script src='fullcalendar/packages/interaction/main.js'></script>
+        <script src='fullcalendar/packages/daygrid/main.js'></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var calendarEl = document.getElementById('calendar');
+                var list = [];
+                $.ajax({
+                    url: "http://localhost:4000/task",
+                    method: "GET",
+                    success: function (tasks) {
+                        tasks.map(t => {
+                            list.push({
+                                title: t.task_name,
+                                start: t.start_date,
+                                end: t.due_date
+                            });
+                        })
+                        console.log(list);
+                        var calendar = new FullCalendar.Calendar(calendarEl, {
+                            plugins: ['interaction', 'dayGrid'],
+                            defaultDate: window.today,
+                            editable: true,
+                            eventLimit: true,
+                            events: list,
+                        });
+
+                        calendar.render();
+                    }
+                });
+            });
+        </script>
+
+
+</body>
+
+</html>
